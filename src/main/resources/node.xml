@@ -9,19 +9,11 @@
 
     <!-- Datasource for sample in-memory H2 database. -->
     <bean id="ignite.cfg" class="org.apache.ignite.configuration.IgniteConfiguration">
-        <!-- Set to true to enable distributed class loading for examples, default is false. -->
-        <property name="peerClassLoadingEnabled" value="true"/>
 
         <!-- Explicitly configure TCP discovery SPI to provide list of initial nodes. -->
         <property name="discoverySpi">
             <bean class="org.apache.ignite.spi.discovery.tcp.TcpDiscoverySpi">
                 <property name="ipFinder">
-                    <!--
-                        Ignite provides several options for automatic discovery that can be used
-                        instead os static IP based discovery. For information on all options refer
-                        to our documentation: http://apacheignite.readme.io/docs/cluster-config
-                    -->
-                    <!-- Uncomment static IP finder to enable static-based discovery of initial nodes. -->
                     <bean class="org.apache.ignite.spi.discovery.tcp.ipfinder.vm.TcpDiscoveryVmIpFinder">
                         <!--<bean class="org.apache.ignite.spi.discovery.tcp.ipfinder.multicast.TcpDiscoveryMulticastIpFinder">-->
                         <property name="addresses">
@@ -35,22 +27,84 @@
             </bean>
         </property>
 
-      <!--  <property name="marshaller">
-            <bean class="org.apache.ignite.internal.binary.BinaryMarshaller"/>
-        </property>
+        <!--  <property name="marshaller">
+              <bean class="org.apache.ignite.internal.binary.BinaryMarshaller"/>
+          </property>
 
-        <property name="binaryConfiguration">
-            <bean class="org.apache.ignite.configuration.BinaryConfiguration">
-                <property name="compactFooter" value="false"/>
-            </bean>
-        </property>-->
+          <property name="binaryConfiguration">
+              <bean class="org.apache.ignite.configuration.BinaryConfiguration">
+                  <property name="compactFooter" value="false"/>
+              </bean>
+          </property>-->
 
         <property name="cacheConfiguration">
             <list>
                 <!-- Partitioned cache example configuration (Atomic mode). -->
                 <bean parent="mycache.cfg">
-                    <property name="atomicityMode" value="ATOMIC"/>
-                    <property name="backups" value="1"/>
+                    <property name="name" value="cassandraCache"/>
+
+                    <property name="cacheStoreFactory">
+                        <bean class="org.apache.ignite.cache.store.cassandra.CassandraCacheStoreFactory">
+                            <property name="dataSourceBean" value="cassandraDataSource"/>
+                            <property name="persistenceSettingsBean" value="persistence_settings_1.cfg"/>
+                        </bean>
+                    </property>
+                    <property name="queryEntities">
+                        <list>
+                            <bean class="org.apache.ignite.cache.QueryEntity">
+                                <property name="tableName" value="Table1"/>
+                                <property name="keyType" value="java.lang.String"/>
+                                <property name="valueType" value="com.gm.test_cassandra.model.Test1Key"/>
+                                <property name="fields">
+                                    <map>
+                                        <entry key="my_id" value="java.lang.String"/>
+                                    </map>
+                                </property>
+                                <property name="indexes">
+                                    <list>
+                                        <bean class="org.apache.ignite.cache.QueryIndex">
+                                            <constructor-arg value="my_id"/>
+                                        </bean>
+                                    </list>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+
+                <bean parent="mycache.cfg">
+                    <property name="name" value="cassandraCache2"/>
+
+                    <property name="cacheStoreFactory">
+                        <bean class="org.apache.ignite.cache.store.cassandra.CassandraCacheStoreFactory">
+                            <property name="dataSourceBean" value="cassandraDataSource"/>
+                            <property name="persistenceSettingsBean" value="persistence_settings_2.cfg"/>
+                        </bean>
+                    </property>
+
+                    <property name="queryEntities">
+                        <list>
+                            <bean class="org.apache.ignite.cache.QueryEntity">
+                                <property name="tableName" value="Table2"/>
+                                <property name="keyType" value="com.gm.test_cassandra.model.Test1Key"/>
+                                <property name="valueType" value="com.gm.test_cassandra.model.Test1"/>
+                                <property name="fields">
+                                    <map>
+                                        <entry key="my_id" value="java.lang.String"/>
+                                        <entry key="column1" value="java.lang.String"/>
+                                        <entry key="column2" value="java.util.Date"/>
+                                        <entry key="column3" value="java.lang.String"/>
+                                        <entry key="column4" value="java.util.Date"/>
+                                        <entry key="column5" value="java.lang.String"/>
+                                        <entry key="column6" value="java.lang.String"/>
+                                        <entry key="column7" value="java.lang.Integer"/>
+                                        <entry key="column8" value="java.lang.String"/>
+                                        <entry key="column9" value="java.lang.String"/>
+                                    </map>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
                 </bean>
             </list>
         </property>

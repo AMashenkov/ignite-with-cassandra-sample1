@@ -1,5 +1,6 @@
 package org.testprojects.ignite.ignte_cassandra_client;
 
+import com.gm.test_cassandra.model.Test1;
 import com.gm.test_cassandra.model.Test1Key;
 import org.apache.ignite.Ignite;
 import org.apache.ignite.IgniteCache;
@@ -10,8 +11,6 @@ import org.apache.ignite.Ignition;
  */
 public class IgniteServerRunner {
 
-    public static final String CACHE_NAME = "cassandraCache";
-
     public static void main(String[] args) throws Exception {
         runServer();
     }
@@ -21,11 +20,32 @@ public class IgniteServerRunner {
 
         Ignite ignite = Ignition.start("node.xml");
 
-        IgniteCache<Object , Test1Key> cache = ignite.cache(CACHE_NAME);
+//        checkStringKey(ignite);
+
+        checkPojoKey(ignite);
+    }
+
+    private static void checkStringKey(Ignite ignite) {
+        IgniteCache<Object , Test1Key> cache = ignite.cache("cassandraCache");
 
         Object key = "1";
         cache.put(key, new Test1Key("id1"));
 
         System.out.println(cache.get(key));
+    }
+
+    private static void checkPojoKey(Ignite ignite) {
+        IgniteCache<Test1Key , Test1> cache2 = ignite.cache("cassandraCache2");
+
+        Test1Key key = new Test1Key("id1");
+
+        Test1 val = new Test1();
+        val.setColumn1("col1 value");
+        val.setColumn3("col1 value");
+        val.setColumn5("col1 value");
+
+        cache2.put(key, val);
+
+        System.out.println(cache2.get(key));
     }
 }

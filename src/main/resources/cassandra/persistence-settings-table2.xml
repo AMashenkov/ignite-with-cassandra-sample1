@@ -1,0 +1,8 @@
+<persistence keyspace="test2" table="Table2">
+    <keyPersistence class="com.gm.test_cassandra.model.Test1Key" strategy="POJO">
+        <partitionKey>
+            <field name="id" column="my_id"/>
+        </partitionKey>
+    </keyPersistence>
+    <valuePersistence class="com.gm.test_cassandra.model.Test1" strategy="POJO"/>
+</persistence>
