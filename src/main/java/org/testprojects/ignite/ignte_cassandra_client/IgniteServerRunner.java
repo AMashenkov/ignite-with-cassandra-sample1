@@ -42,8 +42,8 @@ public class IgniteServerRunner {
 
             Test1 val = new Test1();
             val.setColumn1("col1 value");
-            val.setColumn3("col1 value");
-            val.setColumn5("col1 value");
+            val.setColumn3("col3 value");
+            val.setColumn5("col5 value");
 
             cache2.put(key, val);
 

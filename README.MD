@@ -9,8 +9,10 @@ That should build the project and create a corresponding
 image from that. Then a Cassandra instance should be started and
 after that a client instance should be brought up.  
 The client will try to connect to Cassandra and eventually
-you should see that client has successfully put and gotten value from Cassandra
-`org.testprojects.ignite.ignte_cassandra_client.EntityWithMapField{attrs={1=one, 2=two}}`
+you should see that client has successfully put and gotten value from Cassandra:
+
+{Test1Key: {id: id1}}
+Test1{column1='col1 value', column3='col3 value', column5='col3 value', column6='null'}
 
 # How to run from host with a custom Cassandra installation
 
