@@ -1,0 +1,105 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/util
+        http://www.springframework.org/schema/util/spring-util.xsd">
+
+
+    <!-- Partitioned cache example configuration (Atomic mode). -->
+    <bean abstract="true" name="mycache.cfg" class="org.apache.ignite.configuration.CacheConfiguration">
+        <property name="name" value="cassandraCache" />
+
+        <property name="readThrough" value="true" />
+        <property name="writeThrough" value="true" />
+        <!--<property name="storeKeepBinary" value="true"/>-->
+
+        <property name="cacheStoreFactory">
+            <bean class="org.apache.ignite.cache.store.cassandra.CassandraCacheStoreFactory">
+                <!-- Datasource configuration bean which is responsible for Cassandra connection details -->
+                <property name="dataSourceBean" value="cassandraDataSource" />
+                <!-- Persistent settings bean which is responsible for the details of how objects will be persisted to Cassandra -->
+                <property name="persistenceSettingsBean" value="persistence_settings.cfg" />
+            </bean>
+        </property>
+
+        <property name="queryEntities">
+            <list>
+                <bean class="org.apache.ignite.cache.QueryEntity">
+                    <property name="tableName" value="Test1Key"/>
+                    <property name="keyType" value="java.lang.String"/>
+                    <property name="valueType" value="com.gm.test_cassandra.model.Test1Key"/>
+                    <property name="fields">
+                        <map>
+                            <entry key="my_id" value="java.lang.String"/>
+                        </map>
+                    </property>
+                    <property name="aliases">
+                    <map>
+                        <entry key="id" value="my_id"/>
+                    </map>
+                    </property>
+                    <property name="indexes">
+                        <list>
+                            <bean class="org.apache.ignite.cache.QueryIndex">
+                                <constructor-arg value="my_id"/>
+                            </bean>
+                        </list>
+                    </property>
+
+
+                </bean>
+               <!-- <bean class="org.apache.ignite.cache.QueryEntity">
+                    <property name="keyType" value="com.gm.test_cassandra.model.Test1Key"/>
+                    <property name="valueType" value="com.gm.test_cassandra.model.Test1"/>
+                    <property name="fields">
+                        <map>
+                            <entry key="column1" value="java.lang.String"/>
+                            <entry key="column2" value="java.util.Date"/>
+                            <entry key="column3" value="java.lang.String"/>
+                            <entry key="column4" value="java.util.Date"/>
+                            <entry key="column5" value="java.lang.String"/>
+                            <entry key="column6" value="java.lang.String"/>
+                            <entry key="column7" value="java.lang.Integer"/>
+                            <entry key="column8" value="java.lang.String"/>
+                            <entry key="column9" value="java.lang.String"/>
+                        </map>
+                    </property>
+                </bean>-->
+            </list>
+        </property>
+    </bean>
+
+    <!-- Persistence settings for 'cache2' -->
+    <bean id="persistence_settings.cfg"
+          class="org.apache.ignite.cache.store.cassandra.persistence.KeyValuePersistenceSettings">
+        <constructor-arg type="org.springframework.core.io.Resource"
+                         value="cassandra/persistence-settings.xml"/>
+    </bean>
+
+    <bean id="cassandraAdminCredentials" class="org.apache.ignite.cache.store.cassandra.datasource.PlainCredentials">
+        <constructor-arg index="0" value=""/>
+        <constructor-arg index="1" value=""/>
+    </bean>
+
+    <bean id="loadBalancingPolicy" class="com.datastax.driver.core.policies.TokenAwarePolicy">
+        <constructor-arg type="com.datastax.driver.core.policies.LoadBalancingPolicy">
+            <bean class="com.datastax.driver.core.policies.RoundRobinPolicy"/>
+        </constructor-arg>
+    </bean>
+
+    <bean id="cassandraDataSource" class="org.apache.ignite.cache.store.cassandra.datasource.DataSource">
+        <property name="credentials" ref="cassandraAdminCredentials"/>
+        <property name="contactPoints">
+            <list >
+                <value>127.0.0.1</value>
+                <value>cassandra-test</value>
+            </list>
+        </property>
+        <property name="readConsistency" value="ONE"/>
+        <property name="writeConsistency" value="ONE"/>
+        <property name="loadBalancingPolicy" ref="loadBalancingPolicy"/>
+    </bean>
+</beans>

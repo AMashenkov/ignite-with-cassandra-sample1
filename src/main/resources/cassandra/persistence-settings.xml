@@ -1,0 +1,6 @@
+<persistence keyspace="test1" table="Test1Key">
+    <keyPersistence class="java.lang.String" strategy="PRIMITIVE"/>
+    <valuePersistence class="com.gm.test_cassandra.model.Test1Key" strategy="POJO">
+        <field name="id" column="my_id" />
+    </valuePersistence>
+</persistence>
