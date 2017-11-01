@@ -20,32 +20,34 @@ public class IgniteServerRunner {
 
         Ignite ignite = Ignition.start("node.xml");
 
-//        checkStringKey(ignite);
+        checkStringKey(ignite);
 
         checkPojoKey(ignite);
     }
 
     private static void checkStringKey(Ignite ignite) {
-        IgniteCache<Object , Test1Key> cache = ignite.cache("cassandraCache");
+        try(IgniteCache<Object , Test1Key> cache = ignite.cache("cassandraCache1")) {
 
-        Object key = "1";
-        cache.put(key, new Test1Key("id1"));
+            Object key = "1";
+            cache.put(key, new Test1Key("id1"));
 
-        System.out.println(cache.get(key));
+            System.out.println(cache.get(key));
+        }
     }
 
     private static void checkPojoKey(Ignite ignite) {
-        IgniteCache<Test1Key , Test1> cache2 = ignite.cache("cassandraCache2");
+        try(IgniteCache<Test1Key , Test1> cache2 = ignite.cache("cassandraCache2")) {
 
-        Test1Key key = new Test1Key("id1");
+            Test1Key key = new Test1Key("id1");
 
-        Test1 val = new Test1();
-        val.setColumn1("col1 value");
-        val.setColumn3("col1 value");
-        val.setColumn5("col1 value");
+            Test1 val = new Test1();
+            val.setColumn1("col1 value");
+            val.setColumn3("col1 value");
+            val.setColumn5("col1 value");
 
-        cache2.put(key, val);
+            cache2.put(key, val);
 
-        System.out.println(cache2.get(key));
+            System.out.println(cache2.get(key));
+        }
     }
 }

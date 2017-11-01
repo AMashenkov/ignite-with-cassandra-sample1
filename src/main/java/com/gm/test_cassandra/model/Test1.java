@@ -84,4 +84,13 @@ public class Test1 {
     public void setColumn9(String column9) {
         this.column9 = column9;
     }
+
+    @Override public String toString() {
+        return "Test1{" +
+            "column1='" + column1 + '\'' +
+            ", column3='" + column3 + '\'' +
+            ", column5='" + column5 + '\'' +
+            ", column6='" + column6 + '\'' +
+            '}';
+    }
 }

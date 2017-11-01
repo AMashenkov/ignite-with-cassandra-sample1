@@ -4,7 +4,7 @@
         http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 
-    <!-- Partitioned cache example configuration (Atomic mode). -->
+    <!-- Abstract partitioned cache example configuration (Atomic mode). -->
     <bean abstract="true" name="mycache.cfg" class="org.apache.ignite.configuration.CacheConfiguration">
         <property name="atomicityMode" value="ATOMIC"/>
         <property name="backups" value="1"/>
@@ -12,7 +12,6 @@
         <property name="readThrough" value="true"/>
         <property name="writeThrough" value="true"/>
         <!--<property name="storeKeepBinary" value="true"/>-->
-
     </bean>
 
     <!-- Persistence settings for 'table1' -->
@@ -28,6 +27,7 @@
         <constructor-arg type="org.springframework.core.io.Resource"
                          value="cassandra/persistence-settings-table2.xml"/>
     </bean>
+
 
     <bean id="cassandraAdminCredentials" class="org.apache.ignite.cache.store.cassandra.datasource.PlainCredentials">
         <constructor-arg index="0" value=""/>
