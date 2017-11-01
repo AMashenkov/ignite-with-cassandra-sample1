@@ -10,7 +10,7 @@ import org.apache.ignite.Ignition;
  */
 public class IgniteServerRunner {
 
-    public static final String CACHE_NAME = "Test1Key";
+    public static final String CACHE_NAME = "cassandraCache";
 
     public static void main(String[] args) throws Exception {
         runServer();

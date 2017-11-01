@@ -36,11 +36,6 @@
                             <entry key="my_id" value="java.lang.String"/>
                         </map>
                     </property>
-                    <property name="aliases">
-                    <map>
-                        <entry key="id" value="my_id"/>
-                    </map>
-                    </property>
                     <property name="indexes">
                         <list>
                             <bean class="org.apache.ignite.cache.QueryIndex">
